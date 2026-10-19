@@ -10,9 +10,18 @@ public class Coin : MonoBehaviour
     [SerializeField] private CoinType coinType = CoinType.Normal;
     [SerializeField] private int scoreValue = 1; // only used by Normal coins
 
+    [Header("Spin")]
+    [SerializeField] private Vector3 spinAxis = Vector3.up;
+    [SerializeField] private float spinSpeed = 90f; // degrees per second
+
     private void Reset()
     {
         GetComponent<Collider>().isTrigger = true;
+    }
+
+    private void Update()
+    {
+        transform.Rotate(spinAxis, spinSpeed * Time.deltaTime, Space.Self);
     }
 
     private void OnTriggerEnter(Collider other)

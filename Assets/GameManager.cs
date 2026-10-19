@@ -12,7 +12,6 @@ public class GameManager : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private Spawner spawner;
-    [SerializeField] private Transform ball;
 
     [Header("Bonus Coin Settings")]
     [SerializeField] private int bonusCoinTotal = 50;
@@ -63,6 +62,7 @@ public class GameManager : MonoBehaviour
         if (!redCoinSpawned && score >= redCoinThreshold)
         {
             redCoinSpawned = true;
+            spawner.StopNormalCoinSpawning(); // board settles so the Red Coin stands out
             spawner.SpawnRedCoin();
         }
     }
@@ -79,8 +79,7 @@ public class GameManager : MonoBehaviour
             bonusText.text = $"BonusCoins: {bonusCollected}/{bonusCoinTotal}";
         }
 
-        Vector3 spawnCenter = ball != null ? ball.position : transform.position;
-        spawner.SpawnBlueCoins(spawnCenter, bonusCoinTotal);
+        spawner.StartBlueCoinSpawning(bonusCoinTotal);
     }
 
     /// <summary>Called by Coin.cs for each Blue Coin collected.</summary>
