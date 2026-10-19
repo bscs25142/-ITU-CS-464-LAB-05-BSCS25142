@@ -1,19 +1,37 @@
 using UnityEngine;
 
+public enum CoinType { Normal, Red, Blue }
+
+// One script for all three coin prefabs - set the Coin Type in the Inspector
+// on each prefab (Normal = yellow coin, Red = Red Coin, Blue = Blue bonus coin).
+[RequireComponent(typeof(Collider))]
 public class Coin : MonoBehaviour
 {
-    [SerializeField] int value = 1;
-    [SerializeField] float spinSpeed = 90f;
+    [SerializeField] private CoinType coinType = CoinType.Normal;
+    [SerializeField] private int scoreValue = 1; // only used by Normal coins
 
-    void Update() => transform.Rotate(0f, spinSpeed * Time.deltaTime, 0f);
-
-    void OnTriggerEnter(Collider other)
+    private void Reset()
     {
-        Debug.Log($"Coin touched by {other.name}");
-        if (other.CompareTag("Player"))
+        GetComponent<Collider>().isTrigger = true;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!other.CompareTag("Player")) return;
+
+        switch (coinType)
         {
-            GameManager.Instance.AddScore(value);
-            Destroy(gameObject);
+            case CoinType.Normal:
+                GameManager.Instance.AddScore(scoreValue);
+                break;
+            case CoinType.Red:
+                GameManager.Instance.OnRedCoinCollected();
+                break;
+            case CoinType.Blue:
+                GameManager.Instance.OnBlueCoinCollected();
+                break;
         }
+
+        Destroy(gameObject);
     }
 }
